@@ -1,0 +1,53 @@
+<div class="app-shell">
+  <aside class="rail" aria-label="Main navigation">
+    <a class="brand-mark" href="#workspace" aria-label="Temple Studio home"><span class="brand-lotus">✳</span></a>
+    <div class="rail-divider"></div>
+    <button class="rail-button active" aria-label="Workspace" title="Workspace"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.4"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.4"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.4"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.4"/></svg></button>
+    <button class="rail-button" aria-label="Projects" title="Projects"><svg viewBox="0 0 24 24"><path d="M4 6.5h6l2 2h8a1.5 1.5 0 0 1 1.5 1.5v7.8a1.7 1.7 0 0 1-1.7 1.7H4.2a1.7 1.7 0 0 1-1.7-1.7V8.2A1.7 1.7 0 0 1 4.2 6.5Z"/><path d="M3 10h18"/></svg></button>
+    <button class="rail-button" aria-label="Library" title="Library"><svg viewBox="0 0 24 24"><path d="M4 19.5V5.7A1.7 1.7 0 0 1 5.7 4H20v14H5.7A1.7 1.7 0 0 0 4 19.7Z"/><path d="M4 19.5A1.5 1.5 0 0 0 5.5 21H20M8 8h8M8 11.5h8"/></svg></button>
+    <div class="rail-bottom"><button class="rail-button" aria-label="Help"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.8 9a2.3 2.3 0 1 1 3.7 1.8c-.9.7-1.5 1-1.5 2.2M12 16.5h.01"/></svg></button><div class="avatar">AS</div></div>
+  </aside>
+
+  <main id="workspace" class="main-area">
+    <header class="topbar">
+      <div class="breadcrumb"><span>My projects</span><span class="crumb-slash">/</span><strong>Shiva Temple · Varanasi</strong><span class="saved"><i></i> Saved</span></div>
+      <div class="top-actions"><button class="icon-action" title="Undo" aria-label="Undo">↶</button><button class="icon-action muted" title="Redo" aria-label="Redo">↷</button><span class="top-separator"></span><button class="share-button" (click)="exportPlan()"><svg viewBox="0 0 24 24"><path d="M12 15V3m0 0L7.5 7.5M12 3l4.5 4.5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>Export plan</button><button class="profile-avatar">AS</button></div>
+    </header>
+    <div class="content-wrap">
+      <section class="page-heading"><div><div class="eyebrow"><span class="eyebrow-dot"></span> DESIGN WORKSPACE <span class="eyebrow-line"></span> PROJECT 04</div><h1>Temple Studio<span class="title-period">.</span></h1><p class="subtitle">A space to shape sacred geometry into meaningful places.</p></div><button class="more-button" aria-label="More project options">···</button></section>
+      <section class="summary-strip" aria-label="Project summary">
+        <div class="summary-item"><span class="summary-icon plan-icon">⌗</span><div><small>PLAN TYPE</small><strong>Mandir · North Indian</strong></div></div><span class="summary-divider"></span>
+        <div class="summary-item"><span class="summary-icon area-icon">▧</span><div><small>PLOT AREA</small><strong>{{ plotArea.toLocaleString() }} <em>sq ft</em></strong></div></div><span class="summary-divider"></span>
+        <div class="summary-item"><span class="summary-icon compass-icon">⊕</span><div><small>ORIENTATION</small><strong>{{ rotation }}° <em>North</em></strong></div></div><span class="summary-divider"></span>
+        <div class="summary-item status-summary"><span class="summary-icon check-icon">✓</span><div><small>VASTU ALIGNMENT</small><strong><span class="aligned-dot"></span> Well aligned</strong></div></div><button class="summary-edit" aria-label="Edit project details">↗</button>
+      </section>
+
+      <section class="editor-card">
+        <div class="editor-header"><div class="view-tabs"><button *ngFor="let item of modes" [class.selected]="mode === item" (click)="setMode(item)">{{ item }}<span *ngIf="item === 'Vastu grid'" class="tab-count">9×9</span></button></div><div class="canvas-actions"><button class="canvas-icon" aria-label="Fit to screen" title="Fit to screen">⛶</button><button class="canvas-icon" aria-label="Fullscreen" title="Fullscreen">⤢</button><span class="canvas-action-sep"></span><button class="save-indicator"><i></i> Auto-saved</button></div></div>
+        <div class="editor-body">
+          <nav class="tool-strip" aria-label="Drawing tools"><button *ngFor="let tool of tools" [class.active-tool]="activeTool === tool.name" (click)="activeTool = tool.name" [attr.aria-label]="tool.name" [title]="tool.name"><span>{{ tool.icon }}</span></button><div class="tool-separator"></div><button aria-label="Layers" title="Layers">▤</button></nav>
+          <div class="drawing-area" [class.grid-hidden]="!gridEnabled">
+            <div class="canvas-top-label"><span class="canvas-pip"></span> SITE PLAN <span class="canvas-label-sep">·</span> {{ mode | uppercase }}</div>
+            <div class="compass" [style.transform]="'rotate(' + rotation + 'deg)'"><span class="north">N</span><svg viewBox="0 0 48 52" aria-label="North compass"><path d="M24 3 37 40 24 32 11 40Z" fill="#75836e"/><path d="M24 3v29l13 8Z" fill="#d5d9ce"/><circle cx="24" cy="32" r="2" fill="#455441"/></svg><span class="south">S</span></div>
+              <div class="plan-stage"><div class="plot-boundary" [class.layer-hidden]="!layerVisible('Site boundary')" [style.transform]="'rotate(' + rotation + 'deg)'"><div class="plot-label top">{{ plotWidth }}′</div><div class="plot-label side">{{ plotDepth }}′</div><div class="mandala" [class.vastu-off]="!vastuEnabled || !layerVisible('Vastu mandala')">
+                <div class="mandala-grid"><span *ngFor="let cell of gridCells" [class.center-cell]="cell >= 30 && cell <= 50" [class.energy-cell]="[3, 5, 21, 23, 57, 59, 75, 77].includes(cell)"></span></div>
+                <div class="zone-labels" *ngIf="showLabels"><span *ngFor="let zone of zoneNames" [class.zone-selected]="selectedZone === zone[1]" (click)="selectedZone = zone[1]"><b>{{ zone[0] }}</b><small>{{ zone[1] }}</small></span></div>
+                <div class="temple-footprint" *ngIf="layerVisible('Temple structure')"><div class="outer-platform"><div class="step-ring"><div class="temple-base"><div class="sanctum"><span class="sanctum-mark">✳</span><small>GARBHA<br>GRIHA</small></div></div></div></div><span class="entrance"><i></i> ENTRANCE</span><span class="mandapa">MANDAPA</span></div>
+              </div></div></div>
+            <div class="canvas-bottom-left"><span class="scale-mark"><i></i><i></i></span> 10 ft <span class="bottom-dot">·</span> {{ plotWidth }}′ × {{ plotDepth }}′</div>
+            <div class="canvas-zoom"><button (click)="zoom = Math.max(50, zoom - 10)" aria-label="Zoom out">−</button><span>{{ zoom }}%</span><button (click)="zoom = Math.min(150, zoom + 10)" aria-label="Zoom in">+</button><span class="zoom-sep"></span><button aria-label="Reset view">⤢</button></div>
+          </div>
+
+          <aside class="properties-panel"><div class="panel-title-row"><div><h2>Properties</h2><span class="selection-caption"><i></i> {{ selectedZone }}</span></div><button class="panel-dots" aria-label="Properties options">···</button></div>
+            <div class="property-section"><div class="section-heading"><span>Site dimensions</span><button class="link-button" aria-label="Lock dimensions">⌑</button></div><div class="dimension-fields"><label><span>Width</span><div><input type="number" min="8" max="240" [(ngModel)]="plotWidth"><em>ft</em></div></label><span class="dimension-x">×</span><label><span>Depth</span><div><input type="number" min="8" max="240" [(ngModel)]="plotDepth"><em>ft</em></div></label></div></div>
+            <div class="property-section orientation-section"><div class="section-heading"><span>Orientation</span><span class="live-tag">LIVE</span></div><div class="range-row"><input type="range" min="0" max="359" [(ngModel)]="rotation" aria-label="North orientation"><span>{{ rotation }}°</span></div><div class="range-hints"><span>0° · North</span><span>360°</span></div></div>
+            <div class="property-section vastu-section"><div class="section-heading"><span>Vastu overlay</span><button class="toggle" [class.on]="vastuEnabled" (click)="vastuEnabled = !vastuEnabled" aria-label="Toggle Vastu overlay"><i></i></button></div><div class="setting-row"><span>Show 9×9 grid</span><button class="mini-toggle" [class.on]="gridEnabled" (click)="gridEnabled = !gridEnabled" aria-label="Toggle grid"><i></i></button></div><div class="setting-row"><span>Zone labels</span><button class="mini-toggle" [class.on]="showLabels" (click)="showLabels = !showLabels" aria-label="Toggle zone labels"><i></i></button></div></div>
+            <div class="property-section layers-section"><div class="section-heading"><span>Visible layers</span><button class="link-button" aria-label="Add layer">＋</button></div><div class="layer-row" *ngFor="let layer of layers"><span class="layer-swatch" [style.background]="layer.color"></span><span>{{ layer.name }}</span><button class="eye-button" [class.layer-off]="!layer.visible" (click)="toggleLayer(layer.name)" [attr.aria-label]="'Toggle ' + layer.name">◉</button></div></div>
+          </aside>
+        </div>
+        <footer class="editor-footer"><div class="footer-left"><span class="key-hint">⌘</span> <span>+ scroll to zoom</span><span class="footer-divider"></span><span>Selected</span><b>{{ selectedZone }}</b></div><button class="help-link">Keyboard shortcuts <span>⌘ /</span></button></footer>
+      </section>
+      <footer class="page-footer"><span>Inspired by the <strong>Vastu Purusha Mandala</strong> · A traditional framework for sacred space</span><span class="footer-version">TEMPLE STUDIO <i>·</i> 01.24</span></footer>
+    </div>
+  </main>
+</div>
